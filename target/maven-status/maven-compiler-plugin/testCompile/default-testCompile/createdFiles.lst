@@ -1,0 +1,5 @@
+com\github\i24x\spring\ioc\SpringGenericTestCase.class
+com\github\i24x\spring\ioc\bean\Aoo2Test.class
+com\github\i24x\spring\ioc\bean\AooTest.class
+com\github\i24x\spring\ioc\bean\suite\AooSuite.class
+com\github\i24x\spring\ioc\bean\BoolifeCycleTest.class

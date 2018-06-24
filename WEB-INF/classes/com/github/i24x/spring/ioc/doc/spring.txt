@@ -1,0 +1,210 @@
+# SPRING 学习笔记 #
+----------
+内容大纲：
+
+1. Spring工作原理 
+2. IOC 
+
+java.lang.Object
+org.springframework.core.SimpleAliasRegistry
+org.springframework.beans.factory.support.DefaultSingletonBeanRegistry
+org.springframework.beans.factory.support.FactoryBeanRegistrySupport
+org.springframework.beans.factory.support.AbstractBeanFactory
+org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory
+org.springframework.beans.factory.support.DefaultListableBeanFactory
+org.springframework.beans.factory.xml.XmlBeanFactory
+All Implemented Interfaces:
+java.io.Serializable, BeanFactory, AutowireCapableBeanFactory, ConfigurableBeanFactory, ConfigurableListableBeanFactory,
+SingletonBeanRegistry, HierarchicalBeanFactory, ListableBeanFactory, BeanDefinitionRegistry, AliasRegistry
+
+XmlBeanFactory
+
+//定义BeanDefinition的信息来源，在XmlBeanFactory中作为构造函数的参数传给XmlBeanFactory
+ClassPathResource resource = new ClassPathResource("classpath:applicationContext.xml"); 
+//创建一个BeanFactory的IoC容器 
+DefaultListableBeanFactory factory = new DefaultListableBeanFactory();
+//创建一个加载BeanDefinition的读取器，通过一个回调配置给BeanFactory 
+XmlBeanDefinitionReader reader = new XmlBeanDefinitionReader(factory);
+//从信息来源中加载BeanDefinition 
+reader.loadBeanDefinitions(resource); 
+Aoo aoo = (Aoo)factory.getBean("Aoo"); 
+aoo.sendMsg("OK");
+
+Resource定位过程
+
+BeanDefinition的载入
+
+向IoC容器注册
+
+BeanDefinitionParserDelegate
+BeanDefinitionHolder
+BeanDefinition
+
+
+loadBeanDefinitions(XmlBeanDefinitionReader) : void - org.springframework.context.support.AbstractXmlApplicationContext
+	loadBeanDefinitions(DefaultListableBeanFactory) : void - org.springframework.context.support.AbstractXmlApplicationContext
+		refreshBeanFactory() : void - org.springframework.context.support.AbstractRefreshableApplicationContext
+			obtainFreshBeanFactory() : ConfigurableListableBeanFactory - org.springframework.context.support.AbstractApplicationContext
+				refresh() : void - org.springframework.context.support.AbstractApplicationContext
+
+有了Resource定位对象后，就可以按照Spring的Bean定义规则来对这个XML的文档书进行解析了，解析工作是交给BeanDefinitionParserDelegate来完成的，
+BeanDefinition的载入分为两部分：首先是通过调用XML的解析器得到document对象，但这个document对象并没有按照Spring的Bean规则进行解析，
+按照Spring的Bean规则进行解析过程是在documentReader中实现的。把Bean的id、name、aliase等属性元素读取出来后设置到生成的BeanDefinitionHolder中去。
+BeanDefinitionHolder是BeanDefinition的封装类，封装了BeanDefinition，Bean的名字和别名，用它来完成向IoC容器注册
+
+
+
+registerBeanDefinitions(Document, Resource) : int - org.springframework.beans.factory.xml.XmlBeanDefinitionReader
+	doLoadBeanDefinitions(InputSource, Resource) : int - org.springframework.beans.factory.xml.XmlBeanDefinitionReader
+		loadBeanDefinitions(EncodedResource) : int - org.springframework.beans.factory.xml.XmlBeanDefinitionReader
+			loadBeanDefinitions(Resource) : int - org.springframework.beans.factory.xml.XmlBeanDefinitionReader
+				importBeanDefinitionResource(Element) : void - org.springframework.beans.factory.xml.DefaultBeanDefinitionDocumentReader
+				importBeans(String) : void - org.springframework.beans.factory.groovy.GroovyBeanDefinitionReader
+				loadBeanDefinitions(Resource...) : int - org.springframework.beans.factory.support.AbstractBeanDefinitionReader
+					createDefinition(String, String) : BeanFactory - org.springframework.beans.factory.access.SingletonBeanFactoryLocator
+					load(Resource...) : void - org.springframework.context.support.GenericGroovyApplicationContext
+					load(Resource...) : void - org.springframework.context.support.GenericXmlApplicationContext
+					loadBeanDefinitions(String, Set<Resource>) : int - org.springframework.beans.factory.support.AbstractBeanDefinitionReader
+					loadBeanDefinitions(XmlBeanDefinitionReader) : void - org.springframework.context.support.AbstractXmlApplicationContext
+						loadBeanDefinitions(DefaultListableBeanFactory) : void - org.springframework.context.support.AbstractXmlApplicationContext
+							refreshBeanFactory() : void - org.springframework.context.support.AbstractRefreshableApplicationContext
+								obtainFreshBeanFactory() : ConfigurableListableBeanFactory - org.springframework.context.support.AbstractApplicationContext
+									refresh() : void - org.springframework.context.support.AbstractApplicationContext
+				
+
+doRegisterBeanDefinitions(Element) : void - org.springframework.beans.factory.xml.DefaultBeanDefinitionDocumentReader
+	parseDefaultElement(Element, BeanDefinitionParserDelegate) : void - org.springframework.beans.factory.xml.DefaultBeanDefinitionDocumentReader
+	registerBeanDefinitions(Document, XmlReaderContext) : void - org.springframework.beans.factory.xml.DefaultBeanDefinitionDocumentReader
+		registerBeanDefinitions(Document, Resource) : int - org.springframework.beans.factory.xml.XmlBeanDefinitionReader
+			doLoadBeanDefinitions(InputSource, Resource) : int - org.springframework.beans.factory.xml.XmlBeanDefinitionReader
+		
+this.delegate = createDelegate(this.readerContext, root, parent);
+preProcessXml(root);
+parseBeanDefinitions(root, this.delegate);
+postProcessXml(root);
+
+
+
+parseBeanDefinitions(Element, BeanDefinitionParserDelegate) : void - org.springframework.beans.factory.xml.DefaultBeanDefinitionDocumentReader
+	doRegisterBeanDefinitions(Element) : void - org.springframework.beans.factory.xml.DefaultBeanDefinitionDocumentReader
+
+
+
+parseBeanDefinitionElement(Element, BeanDefinition) : BeanDefinitionHolder - org.springframework.beans.factory.xml.BeanDefinitionParserDelegate
+	parseBeanDefinitionElement(Element) : BeanDefinitionHolder - org.springframework.beans.factory.xml.BeanDefinitionParserDelegate
+		processBeanDefinition(Element, BeanDefinitionParserDelegate) : void - org.springframework.beans.factory.xml.DefaultBeanDefinitionDocumentReader
+			parseDefaultElement(Element, BeanDefinitionParserDelegate) : void - org.springframework.beans.factory.xml.DefaultBeanDefinitionDocumentReader
+				parseBeanDefinitions(Element, BeanDefinitionParserDelegate) : void - org.springframework.beans.factory.xml.DefaultBeanDefinitionDocumentReader
+					doRegisterBeanDefinitions(Element) : void - org.springframework.beans.factory.xml.DefaultBeanDefinitionDocumentReader
+	
+ parseDefaultElement(Element ele, BeanDefinitionParserDelegate delegate)
+
+	if (delegate.nodeNameEquals(ele, IMPORT_ELEMENT)) {
+		importBeanDefinitionResource(ele);
+	}
+	else if (delegate.nodeNameEquals(ele, ALIAS_ELEMENT)) {
+		processAliasRegistration(ele);
+	}
+	else if (delegate.nodeNameEquals(ele, BEAN_ELEMENT)) {
+		processBeanDefinition(ele, delegate);
+	}
+	else if (delegate.nodeNameEquals(ele, NESTED_BEANS_ELEMENT)) {
+		// recurse
+		doRegisterBeanDefinitions(ele);
+	}
+
+BeanDefinitionParserDelegate
+BeanDefinitionReaderUtils
+
+
+
+<bean>的名字 &,alias,id（名称的转换，绑定）
+属性及构造函数参数注入 （注入过程，类型转换）
+依赖解析 （显示依赖和自动依赖解析 depends-on,autowire，dependency-check）
+继承（extends）
+作用域(singleton,prototype,session等，不同作用域的bean的具体实例化过程)
+工厂方法与 FactoryBean
+方法替换（lookup）
+init-memthod destroy-method初始化方法和销毁方法
+spring中BeanFactory相关的特殊bean
+Aware接口系列：BeanFacotryAware；BeanNameAware；BeanClassLoaderAware
+-------------
+PropertyPlaceholderConfigurer；PropertyOverrideConfigurer；CustomEditorConfigurer;CustomScopeConfigurer
+Bean后置处理接口（BeanPostProcessor）InstantiationAwareBeanPostProcessor;DestructionAwareBeanPo;stProcessor;SmartInstantiationAwareBeanPostProcessor
+InitializingBean
+DisposableBean
+ApplicationContext对Spring中BeanFactory的功能扩展
+统一资源加载（资源的封装与加载）
+国际化信息支持（MessageSource）
+容器内部事件
+
+BeanFactory的体系结构：各接口的职责、各个实现类的核心代码理解
+BeanDefinition的体系
+Resource体系
+可以看看 XmlBeanFactory是如何解析xml文件, 最终形成 BeanFactory 的
+WebApplicationContext的初始化过程
+
+spring统一数据库访问异常体系结构及转换规则
+模板模式及回调式的jdbc数据库访问方式,DAO支持
+统一数据源DataSource
+ORM的集成支持
+缓存
+Spring的事务管理器体系结构
+Spring中事务切入实现
+编程式事务和声明式事务管理
+
+3. DI 
+4. AOP
+5. Resource 
+6.  SpEl 
+
+
+1. Spring Bean作用域
+2. Spring 懒加载模式
+3. Spring Bean 生命周期
+
+----------
+# SPRING MVC  #
+https://www.cnblogs.com/RunForLove/p/5688731.html
+
+1.Web容器初始化过程
+ContextLoaderListener(init/destory)--Filter(doFilter/init)
+2.SpringMVC中web.xml配置
+
+3.认识ServletContextListener
+
+4.认识ContextLoaderListener
+---------
+ServletContext
+ContextLoaderListener==>>contextInitialized==>>WebApplicationContext【XmlWebApplicationContext
+==>>WebApplicationContext.ROOTWEBAPPLICATIONCONTEXTATTRIBUTE
+==>>configureAndRefreshWebApplicationContext
+
+DispatchServlet初始化：模板方法模式
+public class DispatcherServlet extends FrameworkServlet  子类实现抽象功能
+onRefresh
+
+public abstract class FrameworkServlet extends HttpServletBean implements ApplicationContextAware 父类抽象功能，定义公有功能
+FrameworkServlet提供了整合web javabean和spring application context的整合方案
+通过执行initWebApplicationContext()方法和initFrameworkServlet()方法实现
+
+public abstract class HttpServletBean extends HttpServlet implements EnvironmentCapable, EnvironmentAware Bean初始化实现
+init()和service()，HttpServletBean提供了一个HttpServlet的抽象实现，使的Servlet不再关心init-param部分的赋值，让servlet更关注于自身Bean初始化的实现
+
+
+
+ServletContext
+WebApplicationContext.ROOTWEBAPPLICATIONCONTEXTATTRIBUTE==>>指定父context
+initStrategies==>>初始化处理器映射、视图解析
+
+---------
+
+5.DispatcherServlet初始化（HttpServletBean • FrameworkServlet • DispatcherServlet）
+
+6.ContextLoaderListener与DispatcherServlet关系
+
+7.DispatcherServlet的设计
+
+8.DispatcherServlet工作原理
+
+
