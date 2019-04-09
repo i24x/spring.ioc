@@ -136,32 +136,32 @@
 									<report format="frames" todir="${basedir}/target/surefire-reports" />
 								</junitreport>
 							</tasks>
-							<skip>${skip.test}</skip>
-							<testFailureIgnore>true</testFailureIgnore>
-							<excludes>
-								<exclude>**/*Suite.java</exclude>
-							</excludes>
-							<includes>
-								<include>**/*Test.java</include>
-							</includes>
+							<!--<skip>${skip.test}</skip>-->
+							<!--<testFailureIgnore>true</testFailureIgnore>-->
+							<!--<excludes>-->
+								<!--<exclude>**/*Suite.java</exclude>-->
+							<!--</excludes>-->
+							<!--<includes>-->
+								<!--<include>**/*Test.java</include>-->
+							<!--</includes>-->
 						</configuration>
 						<goals>
 							<goal>run</goal>
 						</goals>
 					</execution>
 				</executions>
-				<dependencies>
-					<dependency>
-						<groupId>org.apache.ant</groupId>
-						<artifactId>ant-junit</artifactId>
-						<version>1.8.0</version>
-					</dependency>
-					<dependency>
-						<groupId>org.apache.ant</groupId>
-						<artifactId>ant-trax</artifactId>
-						<version>1.8.0</version>
-					</dependency>
-				</dependencies>
+				<!--<dependencies>-->
+					<!--<dependency>-->
+						<!--<groupId>org.apache.ant</groupId>-->
+						<!--<artifactId>ant-junit</artifactId>-->
+						<!--<version>1.8.0</version>-->
+					<!--</dependency>-->
+					<!--<dependency>-->
+						<!--<groupId>org.apache.ant</groupId>-->
+						<!--<artifactId>ant-trax</artifactId>-->
+						<!--<version>1.8.0</version>-->
+					<!--</dependency>-->
+				<!--</dependencies>-->
 			</plugin>
 		</plugins>
 	</build>

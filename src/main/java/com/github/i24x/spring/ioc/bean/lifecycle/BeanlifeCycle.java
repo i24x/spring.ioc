@@ -21,103 +21,45 @@ import org.springframework.stereotype.Service;
 public class BeanlifeCycle implements InitializingBean, DisposableBean,
 		BeanNameAware, BeanFactoryAware {
 	protected final Log logger = LogFactory.getLog(getClass());
-	private String name;
-	private int age;
-	private String beanName;
-	// 实现了BeanNameAware接口，Spring可以将BeanName注入该属性中
-	public BeanFactory beanFactory;
+	private String message;
 
-	// 实现了BeanFactory接口，Spring可将BeanFactory注入该属性中
-
-	public BeanlifeCycle() {
-		logger.info("BeanlifeCycle implements InitializingBean, DisposableBean,BeanNameAware, BeanFactoryAware执行构造器....");
+	public BeanlifeCycle(){
+		System.out.println("3.BeanlifeCycle 实例化.......");
 	}
 
-	public String getName() {
-		return name;
+	public String getMessage() {
+		return message;
 	}
 
-	public void setName(String name) {
-		logger.info(this.getClass().getSimpleName()+"."+"setName="+name);
-		this.name = name;
+	public void setMessage(String message) {
+		this.message = message;
 	}
 
-	public int getAge() {
-		return age;
+	public void xml_init(){
+		//xml开头的表示配置文件配置,这里是bean配置中init-method配置调用
+		System.out.println("11.BeanlifeCycle 初始化(init-method)");
+	}
+	public void xml_destroy(){
+		//destroy-method 配置调用
+		System.out.println("16.BeanlifeCycle 销毁(destroy-method)");
 	}
 
-	public void setAge(int age) {
-		logger.info(this.getClass().getSimpleName()+"."+"setAge="+age);
-		this.age = age;
+	public void setBeanName(String s) {
+		//属性注入后调用
+		System.out.println("6.BeanNameAware.setBeanName(String beanName) 属性注入后调用, 此时beanName = " + s);
 	}
 
-	public BeanFactory getBeanFactory(){
-		return this.beanFactory;
-	}
-	
-	public String getBeanName() {
-		return this.beanName;
-	}
-	
-	/**
-	 * 自己编写的初始化方法
-	 */
-	@PostConstruct
-	public void PostInit() {
-		logger.info("PostConstruct 初始化后处理");
-	}
-
-	/**
-	 * 自己编写的销毁方法
-	 */
-	@PreDestroy
-	public void preDestroy() {
-		logger.info("PreDestroy 销毁实例前处理");
-	}
-	
-	/**
-	 * BeanNameAware接口的方法
-	 * @param name
-	 */
-	@Override
-	public void setBeanName(String name) {
-		logger.info("BeanlifeCycle.BeanNameAware"+"."+"setBeanName="+name);
-		this.beanName = name;
-	}
-	
-	/**
-	 * BeanFactoryAware接口的方法
-	 * 
-	 * @param beanFactory
-	 * @throws BeansException
-	 */
-	@Override
 	public void setBeanFactory(BeanFactory beanFactory) throws BeansException {
-		logger.info("BeanlifeCycle.BeanFactoryAware.setBeanFactory");
-		this.beanFactory = beanFactory;
-	}
-	
-	/**
-	 * InitializingBean接口的方法
-	 * @throws Exception
-	 */
-	@Override
-	public void afterPropertiesSet() throws Exception {
-		logger.info("BoolifeCycle.InitializingBean.afterPropertiesSet()");
+		//setBeanName 后调用
+		System.out.println("7.BeanFactoryAware.setBeanFactory(BeanFactory beanFactory) setBeanName后调用");
 	}
 
-	/**
-	 * DisposableBean接口的方法
-	 * @throws Exception
-	 */
-	@Override
-	public void destroy() throws Exception {
-		logger.info("BoolifeCycle.DisposableBean.destroy() Bean被销毁");
+	public void afterPropertiesSet() throws Exception {
+		//processBeforeInitialization(BeanPostProcessor)后调用
+		System.out.println("10.InitializingBean.afterPropertiesSet(),processBeforeInitialization之后,配置的xml_init之前调用");
 	}
-	
-	@Override
-	public String toString() {
-		return "BoolifeCycle [+name=" + name + ", age="
-				+ age + ", beanName=" + beanName + "]";
+
+	public void destroy() throws Exception {
+		System.out.println("15.DisposableBean.destroy(),在processAfterInitialization之后,配置的xml_destroy之前调用");
 	}
 }

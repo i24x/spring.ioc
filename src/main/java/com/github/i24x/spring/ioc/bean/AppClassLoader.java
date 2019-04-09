@@ -4,6 +4,9 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 
+/**
+ * 自定义类加载器
+ */
 public class AppClassLoader extends ClassLoader {
 
 	@Override
@@ -46,7 +49,7 @@ public class AppClassLoader extends ClassLoader {
    public static String getFileName(String name){
       name = name.replace(".", "//");
       String path= AppClassLoader.getSystemClassLoader().getResource("").getPath();
-      System.out.println(path);
+//      System.out.println(path);
       String fileName= path+ name+ ".class";
       return fileName;
 
@@ -54,7 +57,7 @@ public class AppClassLoader extends ClassLoader {
 
 	@Override
 	protected void finalize() throws Throwable {
-		System.out.println("AppClassLoader Destory ......");
+		System.out.println("App ClassLoader 销毁......");
 		super.finalize();
 	}
 }

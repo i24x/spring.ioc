@@ -8,10 +8,10 @@ import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.stereotype.Service;
 @Service
-public class BoolifeCycleBeanFactoryPostProcessor implements BeanFactoryPostProcessor {
+public class BeanlifeCycleBeanFactoryPostProcessor implements BeanFactoryPostProcessor {
 	protected final Log logger = LogFactory.getLog(getClass());
-    public BoolifeCycleBeanFactoryPostProcessor() {
-        logger.info("BeanFactoryPostProcessor()初始化....");
+    public BeanlifeCycleBeanFactoryPostProcessor() {
+        logger.info("初始化....");
     }
 
     /**
@@ -19,10 +19,12 @@ public class BoolifeCycleBeanFactoryPostProcessor implements BeanFactoryPostProc
      * 可通过该方法对beanFactory进行设置属性
      */
     @Override
-    public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory)
-            throws BeansException {
-        logger.info("1======设置属性  BeanFactoryPostProcessor.postProcessBeanFactory");
-        BeanDefinition beanDefinition = beanFactory.getBeanDefinition("BoolifeCycle");
-        beanDefinition.getPropertyValues().addPropertyValue("age", "200000");
+
+    public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) throws BeansException {
+        //configurableListableBeanFactory.getBeanDefinition("appcontext-service.xml");
+        System.out.println("1.BeanFactoryPostProcessor.postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory)工厂后处理器, ApplicationContext容器初始化中refresh()中调用");
+        BeanDefinition beanDefinition = beanFactory.getBeanDefinition("BeanlifeCycle");
+        beanDefinition.getPropertyValues().addPropertyValue("message", "message");
     }
+
 }

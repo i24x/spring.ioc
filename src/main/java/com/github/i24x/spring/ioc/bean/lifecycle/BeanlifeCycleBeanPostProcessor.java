@@ -6,23 +6,16 @@ import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.stereotype.Service;
 @Service
-public class BoolifeCycleBeanPostProcessor implements BeanPostProcessor {
+public class BeanlifeCycleBeanPostProcessor implements BeanPostProcessor {
 	protected final Log logger = LogFactory.getLog(getClass());
-    public BoolifeCycleBeanPostProcessor(){
-        logger.info("BeanPostProcessor()初始化....");
+
+    public Object postProcessBeforeInitialization(Object o, String s) throws BeansException {
+        System.out.println("8.BeanPostProcessor.postProcessBeforeInitialization(Object o, String s), bean = " + o.getClass());
+        return o;
     }
 
-    @Override
-    public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
-        logger.info("2======初始化前处理  BeanPostProcessor.postProcessBeforeInitialization方法，这里可对"+beanName+"的属性进行更改" +
-        		""+bean);
-        return bean;
-    }
-
-    @Override
-    public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
-        logger.info("2======初始化后处理  BeanPostProcessor.postProcessAfterInitialization方法，这里可对"+beanName+"的属性进行更改" +
-        		""+bean);
-        return bean;
+    public Object postProcessAfterInitialization(Object o, String s) throws BeansException {
+        System.out.println("12.BeanPostProcessor.postProcessAfterInitialization(Object o, String s), bean = " + o.getClass());
+        return o;
     }
 }

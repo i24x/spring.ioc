@@ -36,5 +36,5 @@ FAQ:
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath:applicationContext.xml" })
-public abstract class SpringGenericTestCase {
+public abstract class SpringBaseTestCase {
 }
