@@ -17,8 +17,8 @@ import org.springframework.stereotype.Service;
  * 测试生命周期的BoolifeCycle
  * @author i24x
  */
-@Service("BoolifeCycle")
-public class BoolifeCycle implements InitializingBean, DisposableBean,
+@Service("BeanlifeCycle")
+public class BeanlifeCycle implements InitializingBean, DisposableBean,
 		BeanNameAware, BeanFactoryAware {
 	protected final Log logger = LogFactory.getLog(getClass());
 	private String name;
@@ -29,8 +29,8 @@ public class BoolifeCycle implements InitializingBean, DisposableBean,
 
 	// 实现了BeanFactory接口，Spring可将BeanFactory注入该属性中
 
-	public BoolifeCycle() {
-		logger.info("BoolifeCycle implements InitializingBean, DisposableBean,BeanNameAware, BeanFactoryAware执行构造器....");
+	public BeanlifeCycle() {
+		logger.info("BeanlifeCycle implements InitializingBean, DisposableBean,BeanNameAware, BeanFactoryAware执行构造器....");
 	}
 
 	public String getName() {
@@ -81,7 +81,7 @@ public class BoolifeCycle implements InitializingBean, DisposableBean,
 	 */
 	@Override
 	public void setBeanName(String name) {
-		logger.info("BoolifeCycle.BeanNameAware"+"."+"setBeanName="+name);
+		logger.info("BeanlifeCycle.BeanNameAware"+"."+"setBeanName="+name);
 		this.beanName = name;
 	}
 	
@@ -93,7 +93,7 @@ public class BoolifeCycle implements InitializingBean, DisposableBean,
 	 */
 	@Override
 	public void setBeanFactory(BeanFactory beanFactory) throws BeansException {
-		logger.info("BoolifeCycle.BeanFactoryAware.setBeanFactory");
+		logger.info("BeanlifeCycle.BeanFactoryAware.setBeanFactory");
 		this.beanFactory = beanFactory;
 	}
 	

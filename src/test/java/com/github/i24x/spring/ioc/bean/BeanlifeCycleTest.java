@@ -19,6 +19,8 @@ public class BoolifeCycleTest {
 		xmlcontext.registerShutdownHook();
 		Aoo aoo = (Aoo) xmlcontext.getBean("Aoo");
 		System.out.println(aoo.getAddress());
+
+
 //		//定义BeanDefinition的信息来源，在XmlBeanFactory中作为构造函数的参数传给XmlBeanFactory
 //		ClassPathResource resource = new ClassPathResource("applicationContext.xml"); 
 //		//创建一个BeanFactory的IoC容器 
@@ -31,6 +33,8 @@ public class BoolifeCycleTest {
 //		aoo.sendMsg("OK");
 //		StudentBean bean = factory.getBean("StudentBean", StudentBean.class);
 //		bean.getAge();
+
+
 		BoolifeCycle BoolifeCycle = (BoolifeCycle)xmlcontext.getBean("BoolifeCycle");
 		System.out.println(BoolifeCycle.getAge());
 		for(int i=0;i<10;i++){
